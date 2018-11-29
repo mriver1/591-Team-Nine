@@ -19,7 +19,6 @@ public class MainFrame extends JFrame{
 	WeightPanel weightUG = new WeightUG();
 	CourseTitlePanel course = new CourseTitlePanel();
 	private final JButton savebtn = new JButton("Save");
-	private final JButton tempbtn = new JButton("Save as template");
 	private final JButton cancelbtn = new JButton("Cancel");
 	private final JButton newbtn = new JButton("New");
 	private final JButton logoutbtn = new JButton("Log out");
@@ -37,12 +36,9 @@ public class MainFrame extends JFrame{
 		getContentPane().add(lblNewLabel);
 		grad.setBounds(0, 529, 858, 181);
 		getContentPane().add(grad);
-		savebtn.setBounds(473, 738, 117, 29);
+		savebtn.setBounds(599, 738, 117, 29);
 		
 		getContentPane().add(savebtn);
-		tempbtn.setBounds(591, 738, 149, 29);
-		
-		getContentPane().add(tempbtn);
 		cancelbtn.setBounds(741, 738, 117, 29);
 		
 		getContentPane().add(cancelbtn);
