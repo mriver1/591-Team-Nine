@@ -26,7 +26,7 @@ import javax.swing.JList;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
-
+import net.proteanit.sql.DbUtils;//i add a new import for Dbutils
 
 public class course {
 
