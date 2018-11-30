@@ -63,7 +63,7 @@ public class course {
 	 */
 	public course() {
 		initialize();
-		connection=sqlConnection.dbConnection();
+		connection=sqlConnection.dbConnection();// connect to database
 		
 	}
 
@@ -199,7 +199,7 @@ public class course {
 		spinner.setBounds(237, 284, 36, 20);
 		frame.getContentPane().add(spinner);
 		
-		JButton btnShowData = new JButton("Load Table");
+		JButton btnShowData = new JButton("Load Table"); //load button can read data from database table
 		btnShowData.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
