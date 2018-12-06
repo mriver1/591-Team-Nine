@@ -13,11 +13,13 @@ public class JdbcUtils {
 
     private static final String USERNAME = "root";
 
-    private static final String PASSWORD = "haohui1228";
+    private static final String PASSWORD = "x1lo7e950207";
 
     private static final String DRIVER = "com.mysql.jdbc.Driver";
 
-    private static final String URL = "jdbc:mysql://localhost:3306/easygrading";
+//    private static final String URL = "jdbc:mysql://localhost:3306/easygrading";
+   private static final String URL = "jdbc:sqlite:/Users/wangmengxi/Documents/workspace2018/GradingSystem/couse.db";//root for db file
+
 
     private Connection connection;
 
