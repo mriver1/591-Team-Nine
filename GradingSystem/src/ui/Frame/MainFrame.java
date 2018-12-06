@@ -7,6 +7,7 @@ import javax.swing.BoxLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
@@ -19,7 +20,10 @@ import java.awt.Component;
 import java.awt.EventQueue;
 import javax.swing.border.LineBorder;
 
+import beans.Course;
+import ui.Panels.CourseTitlePanel;
 import ui.Panels.GradingPanel;
+import ui.Panels.WeightForm;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -32,9 +36,21 @@ public class MainFrame extends JFrame implements ActionListener{
 	private final JButton logoutbtn = new JButton("Log out");
 	private final JButton viewbtn = new JButton("View/Modify Course Information");
 	private final JLabel lblNewLabel_1 = new JLabel("(Note: Click the ID to view the information of the student)");
+	
+	private static Course course = CourseTitlePanel.getCourseInfo();
+	private String classID = course.getClassID();
+	private String classTerm = course.getClassTerm();
+	private String classYear = course.getClassYear();
+	private String className = course.getClassName();
+	private Float classCredit = course.getClassCredit();
+	private int classUniqueID = course.getUniqueID();
+	
 	public MainFrame() {
-		getContentPane().setLayout(null);
 		
+		String title = classID + "_" + classTerm + classYear;
+		setTitle(title);
+		getContentPane().setLayout(null);
+		setSize(978, 878);
 		JLabel lblNewLabel = new JLabel("Grade Form");
 		lblNewLabel.setBounds(20, 47, 117, 16);
 		getContentPane().add(lblNewLabel);
@@ -60,12 +76,15 @@ public class MainFrame extends JFrame implements ActionListener{
 		newbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//turn to the interface: create the pj (select the template or create a new one)
+				dispose();
+//				InfoFrame info = new InfoFrame(true);
+				InfoFrame info = new InfoFrame();
+				info.setVisible(true);
 			}
 		});
 		getContentPane().add(newbtn);
 		logoutbtn.setBounds(175, 6, 117, 29);
 		logoutbtn.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub

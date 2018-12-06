@@ -17,13 +17,19 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
-import miranda.StudentInfo;
-import miranda.StudentProfileCopy;
+import beans.StudentInfo;
+import ui.Frame.StudentProfileCopy;
 import ui.Panels.GradingPanel.MyTableModel;
+import utils.sqlConnection;
 
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.JLabel;
@@ -33,14 +39,22 @@ import javax.swing.JTextArea;
 
 public class GradingPanel extends JPanel {
     private boolean DEBUG = false;
+    private String[] assignmentName;
+    private MyTableModel mm = new MyTableModel();
 	public static HashMap<String, StudentInfo> fakeStudents = new HashMap<>();
+	
+	private ArrayList<String> columnNames = new ArrayList<>();
+	private ArrayList<Object[]> data = new ArrayList<>();
 	
     public GradingPanel() {
         super(new GridLayout(1,0));
+//       
+//        initCol();
+//        initStudent();
         
         fakeStudents.put("U79852612", new StudentInfo(-1, "Miranda", "Rivera", "U79852612", "Computer Science", false));
 		fakeStudents.put("U08352066", new StudentInfo(0, "Mengxi", "Wang", "U08352066", "Electrical and Computer Engineering", true));
-
+    		
         JTable MyTableModel = new JTable(new MyTableModel());
         
         for(int i = 0; i < MyTableModel.getColumnCount(); i++) {
@@ -81,17 +95,51 @@ public class GradingPanel extends JPanel {
 
         //Add the scroll pane to this panel.
         add(scrollPane);
-
+    }
+    /*
+    private void initCol() {
+    	assignmentName = mm.getAssignmentList();
+		columnNames.add("ID");
+		columnNames.add("First Name");
+		columnNames.add("Last Name");
+		for(int i = 0; i < assignmentName.length; i++) {
+			columnNames.add(assignmentName[i]);
+		}
+		columnNames.add("Total");
+		columnNames.add("Graduate");
+    }
+    
+    private void initStudent() {
+    	// TODO Auto-generated method stub
+		//student info init
+		Connection connection = null;
+		String query="select * from STUDENT";
+		connection=sqlConnection.dbConnection();// connect to database
+		try {
+			PreparedStatement pst;
+			pst = connection.prepareStatement(query);
+			ResultSet rs=pst.executeQuery();
+			
+			while(rs.next()) {
+				Object[] row = new Object[columnNames.size()];
+				for(int j = 0; j < row.length; j++) {
+					if(row.equals(null)) {
+						break;
+					}
+					row[j] = rs.getString(j + 1);
+				}
+				data.add(row);
+//				System.out.println (rs.getString("Category"));
+			}
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
     }
 
-//    private void initColumnSize(JTable table){
-//    	TableColumn tc = null;
-//    	for(int i = 0 ;i < table.getColumnCount();i++){
-//    		tc = table.getColumnModel().getColumn(i);
-//    		tc.setPreferredWidth(50 * (i+1));
-//    		}
-//    	}
+*/
     class MyTableModel extends AbstractTableModel {
+
     	
 		private String[] columnNames = {"ID",
 										"First Name",
@@ -103,6 +151,7 @@ public class GradingPanel extends JPanel {
                                         "Assignment5",
                                         "Total",
                                         "Graduate"};
+                                 
         private Object[][] data = {
 	    {
 	    	"U79852612",
@@ -132,7 +181,12 @@ public class GradingPanel extends JPanel {
             return columnNames.length;
         }
 
-        public int getRowCount() {
+        public String[] getAssignmentList() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public int getRowCount() {
             return data.length;
         }
 
