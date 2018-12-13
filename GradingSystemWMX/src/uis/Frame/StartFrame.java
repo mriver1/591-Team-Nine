@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StartFrame extends JFrame{
+	private String selectedClass = "Empty template";
 	private Course course; 
 	private String[] showList;
 	private CourseDao courseDao = new CourseDao();
@@ -28,6 +29,11 @@ public class StartFrame extends JFrame{
 	private String year;
 	private String term;
 	
+	
+	public StartFrame(Course newCourse) {
+		
+		
+	}
 	public StartFrame() {
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		setSize(450,300);
@@ -47,12 +53,17 @@ public class StartFrame extends JFrame{
                 int[] indices = list.getSelectedIndices();
                 ListModel<String> listModel = list.getModel();
                 for (int index : indices) {
+                	selectedClass = listModel.getElementAt(index);
+                	setSelectedClass(selectedClass);
                     System.out.println("Selected: " + index + " = " + listModel.getElementAt(index));
                 }
                 System.out.println();
             }
+
+
         });
 		
+
 		list.setSelectedIndex(0);
 		
 		JPanel panel = new JPanel();
@@ -63,29 +74,26 @@ public class StartFrame extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				dispose();			
 				
-				String[] selected = getSelectedClass().split("_");
 				String selectID = "";
 				String selecteTerm = "";
 				String selecteYear = "";
 				
-				if(!getSelectedClass().equals("Empty template")) {
+				selectedClass = (String)list.getSelectedValue();
+				System.out.println(selectedClass);
+				if(!selectedClass.equals("Empty template")) {
+					
+					String[] selected = selectedClass.split("_");
 					selectID = selected[0];
 					String rest = selected[1];
 					selecteYear = rest.substring(0, 4);
 					selecteTerm = rest.substring(4);
-				}
-				
+				} 
 				InfoFrame info = new InfoFrame(selectID, selecteYear, selecteTerm);
 				info.setVisible(true);
 				int x = getLocation().x;
 				int y = getLocation().y;
 				info.setLocation(x, y);
 				
-			}
-
-			private String getSelectedClass() {
-				// TODO Auto-generated method stub
-				return (String) list.getSelectedValue();
 			}
 
 		});
@@ -107,11 +115,16 @@ public class StartFrame extends JFrame{
 	}
 
 	
+	protected void setSelectedClass(String selectedClass2) {
+		// TODO Auto-generated method stub
+		this.selectedClass = selectedClass2;
+		
+	}
 	private void initData() {
 		// TODO Auto-generated method stub
 		courseList = courseDao.courseImport();
 		showList = new String[courseList.size() + 1];
-		showList[0] = " Empty template";
+		showList[0] = "Empty template";
 		for(int i = 1; i < showList.length; i++) {
 			String id = courseList.get(i - 1).getClassID();
 			String term = courseList.get(i - 1).getClassTerm();

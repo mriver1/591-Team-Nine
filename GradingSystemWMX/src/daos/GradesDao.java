@@ -84,7 +84,7 @@ public class GradesDao {
 	
 	}
 
-	public boolean updateGrade(Float grade, int studentID, int classID, int assignID) {
+	public boolean updateGrade(Double grade, int studentID, int classID, int assignID) {
 		sql = "update grades set grade=? where studentID=? and classID=? and assignID=?";
 		params = new ArrayList<>();
 		

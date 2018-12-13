@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
@@ -28,6 +30,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.Window.Type;
 
 public class MainFrame extends JFrame implements ActionListener{
 	private final JButton refreshbtn = new JButton("Refresh");
@@ -160,6 +163,7 @@ public class MainFrame extends JFrame implements ActionListener{
 		panel.setLayout(new GridLayout(20, 3, 0, 0));		
 
 		DefaultTableModel tableModel = new DefaultTableModel(studentData, column);
+
         studentform = new JTable(tableModel);
 //		JTable studentform = new JTable(studentData,column);
 	    studentform.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -176,6 +180,7 @@ public class MainFrame extends JFrame implements ActionListener{
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
 		studentform.setFillsViewportHeight(true);
 		studentform.setCellSelectionEnabled(true);
+		studentform.setSelectionBackground(Color.YELLOW);
 		
 		studentform.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		studentform.addMouseListener(new MouseAdapter(){
@@ -194,7 +199,75 @@ public class MainFrame extends JFrame implements ActionListener{
                 
             }
         });
-		
+		/*
+		tableModel.addTableModelListener(new TableModelListener() {
+			@Override
+            public void tableChanged(TableModelEvent e) {
+				int firstRow = e.getFirstRow();
+                int lastRow = e.getLastRow();
+                int c = e.getColumn();
+                int type = e.getType();
+                
+//                Object selectedData = null;
+//                int selectedRow = studentform.getSelectedRow();
+//                int selectedColumn = studentform.getSelectedColumn();
+//                Student s = new Student();
+//                selectedData = studentform.getValueAt(selectedRow, selectedColumn);
+//                System.out.println("selectedrow" + selectedRow);
+//                String buid = (String)studentform.getValueAt(selectedRow, 0);
+//            	int id = studentDao.getIDbyBUID(buid);
+//            	s = studentDao.getStudent(id);
+//                Double total = 0.0;
+                Object[] a = new Object[assignList.size()];
+            	if (type == TableModelEvent.UPDATE) {
+                for (int row = firstRow; row <= lastRow; row++) {
+                	if (c < 5 || c >= 5 + assignList.size()) {
+                        return;
+                    }
+                	
+                	Student s = new Student();
+                	String buid = (String)studentform.getValueAt(row, 0);
+                	int id = studentDao.getIDbyBUID(buid);
+                	s = studentDao.getStudent(id);
+
+                		for(int i = 5; i < assignList.size(); i++) {
+                    		a[i] = tableModel.getValueAt(row, i);
+                    		
+                    		System.out.println(a[i]);
+                    		Double g= 0.0;
+                    		 try {
+                                 g = Double.parseDouble("" + a[i]);
+                                 
+                             } catch (Exception ex) {
+                                 ex.printStackTrace();
+                             }
+                    		Assignment a2 = assignList.get(i - 5);
+                    		boolean flag = gradesDao.updateGrade(g, id, classUniqueID, a2.getAssignID());
+                    		Double total = calculate(s, assign);
+                    		tableModel.setValueAt(total, row, column.indexOf("Total"));
+                    		tableModel.fireTableCellUpdated(row, column.indexOf("Total"));
+//             				total = getUpdatedData();
+             				boolean flag1 = studentDao.updateTotal(total, s.getUniqueId());
+             				String letter = getLetter(total);
+                     		//TODO customize
+//                     		studentform.setValueAt(letter, row, column.indexOf("LetterGrade"));
+             				tableModel.setValueAt(total, row, column.indexOf("LetterGrade"));
+                    		tableModel.fireTableCellUpdated(row, column.indexOf("LetterGrade"));
+                     		flag = studentDao.updateLetter(letter, s.getUniqueId());
+                     		if(!flag) {
+                     			JOptionPane.showMessageDialog(null, "Invalid", "Error", JOptionPane.ERROR_MESSAGE);
+                     		}
+                    	}
+                    	
+                	}
+                	
+                	
+
+                }
+                
+			}
+		});
+		*/
 		//update
 	    ListSelectionModel cellSelectionModel = studentform.getSelectionModel();
         cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -209,26 +282,20 @@ public class MainFrame extends JFrame implements ActionListener{
                 Student s = new Student();
                 selectedData = studentform.getValueAt(selectedRow, selectedColumn);
                 System.out.println("selectedrow" + selectedRow);
-                int id = selectedRow + 1;
+                String buid = (String)studentform.getValueAt(selectedRow, 0);
+            	int id = studentDao.getIDbyBUID(buid);
             	s = studentDao.getStudent(id);
-//                if(selectedColumn < 5) {
-//                	if(isAdjusting) {
-//                		StudentProfile sp = new StudentProfile(s, assignList);
-//                    	sp.setVisible(true);
-//        				int x = getLocation().x;
-//        				int y = getLocation().y;
-//        				sp.setLocation(x, y);
-//        				sp.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); 	
-//                	}	
-//                } 
                 if(selectedColumn >= 5 && selectedColumn < assignList.size() + 5) {
                 		// grade
-            		int studentID = s.getUniqueId();
+//                	String bu = (String)studentform.getValueAt(selectedRow, 0);
+//                	
+//            		int studentID = studentDao.getIDbyBUID(bu);
+//            		System.out.println("StudentID " + studentID);
         			int assignID = assignDao.getIDbyName(classUniqueID, (String)column.get(selectedColumn));
         			String assignName = (String)column.get(selectedColumn);
             		//int gradeID = gradesDao.getGradeID(studentID, classUniqueID, assignID);
                 	if(isAdjusting) {
-                		addGradeFrame a = new addGradeFrame(assignName, studentID, classUniqueID, assignID);
+                		addGradeFrame a = new addGradeFrame(assignName, id, classUniqueID, assignID);
                     	a.setVisible(true);
         				int x = getLocation().x;
         				int y = getLocation().y;
@@ -438,6 +505,24 @@ public class MainFrame extends JFrame implements ActionListener{
 	    		studentform.getTableHeader().setReorderingAllowed(false);
 	
 	}
+//
+//	protected Double calculate(Student s, Assignment assign2) {
+//		// TODO Auto-generated method stub
+//		Double total = 0.0;
+//		Double weight;
+//		if(s.getStatus()) {
+//			weight = assign2.getWeightG();
+//		}else {
+//			weight = assign2.getWeightU();
+//		}
+//		Double g = gradesDao.getGrade(s.getUniqueId(), classUniqueID, assign2.getAssignID());
+//		System.out.println(classUniqueID + s.getUniqueId() + " " + assign2.getAssignID() + " " + g);
+//		if(g != null) {
+//			total += (g * weight);
+//		}
+//
+//		return total;
+//	}
 
 	protected Double calculate(Student s, List<Assignment> assignList) {
 		// TODO Auto-generated method stub

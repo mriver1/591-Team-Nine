@@ -94,5 +94,32 @@ public class CourseDao {
         System.out.println(this.getClass().toString() + "destroyed.");
     }
 
+	public Boolean addClass(String newID, Float newCredit, String newName, String newTerm, String newYear) {
+		sql = "insert into course (classid, classname, classyear, classterm, classcredit) values (?,?,?,?,?)";
+		params = new ArrayList<>();
+		params.add(newID);
+		params.add(newName);
+		params.add(newYear);
+		params.add(newTerm);
+		params.add(newCredit);
+		
+		try {
+			return dBconnection.updateByPreparedStatement(sql, params);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+//	public List<Course> getClassList() {
+//		sql = "select * from course";
+//		List<Course> cl = new ArrayList<>();
+//		try {
+//			cl = dBconnection.findSimpleRefResult(sql, params, cls)
+//		}
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+
 
 }

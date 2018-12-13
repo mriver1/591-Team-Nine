@@ -17,6 +17,7 @@ public class Login extends JFrame {
 	private JTextField edtUsername;
 	private JTextField edtPassword;
 	private static JFrame frame;
+	private JPasswordField passwordField;
 
 	/**
 	 * Launch the application.
@@ -47,7 +48,6 @@ public class Login extends JFrame {
 		panelLogin.setLayout(null);
 
 		JLabel labelUsername = new JLabel("Username");
-		labelUsername.setForeground(new Color(255, 248, 220));
 		labelUsername.setBounds(83, 77, 80, 16);
 		panelLogin.add(labelUsername);
 
@@ -57,14 +57,18 @@ public class Login extends JFrame {
 		edtUsername.setColumns(10);
 
 		JLabel labelPassword = new JLabel("Password");
-		labelPassword.setForeground(new Color(255, 248, 220));
 		labelPassword.setBounds(83, 119, 61, 16);
 		panelLogin.add(labelPassword);
-
-		edtPassword = new JTextField();
-		edtPassword.setBounds(175, 114, 130, 26);
-		panelLogin.add(edtPassword);
-		edtPassword.setColumns(10);
+		
+		passwordField = new JPasswordField();
+		passwordField.setBounds(175, 114, 130, 26);
+		panelLogin.add(passwordField);
+		passwordField.setColumns(10);
+//
+//		edtPassword = new JTextField();
+//		edtPassword.setBounds(175, 114, 130, 26);
+//		panelLogin.add(edtPassword);
+//		edtPassword.setColumns(10);
 
 		JButton btnLogin = new JButton("Login");
 		btnLogin.setBounds(51, 219, 117, 29);
@@ -85,12 +89,12 @@ public class Login extends JFrame {
 		btnLogin.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (edtUsername.getText() == null || edtUsername.getText().length() <= 0) {
+				if (passwordField.getText() == null || passwordField.getText().length() <= 0) {
 					JOptionPane.showMessageDialog(frame, "Please enter user name", "Warning",
 							JOptionPane.WARNING_MESSAGE);
 					return;
 				}
-				if (edtPassword.getText() == null || edtPassword.getText().length() <= 0) {
+				if (passwordField.getText() == null || passwordField.getText().length() <= 0) {
 					JOptionPane.showMessageDialog(frame, "Please enter password", "Warning",
 							JOptionPane.WARNING_MESSAGE);
 					return;
@@ -98,7 +102,7 @@ public class Login extends JFrame {
 
 				LoginDao loginDao = new LoginDao();
 				String username = edtUsername.getText().trim();
-				String password = edtPassword.getText().trim();
+				String password = passwordField.getText().trim();
 				LoginUser user = new LoginUser(username, password);
 
 				String result = loginDao.login(user);
@@ -124,7 +128,7 @@ public class Login extends JFrame {
 							JOptionPane.WARNING_MESSAGE);
 					return;
 				}
-				if (edtPassword.getText() == null || edtPassword.getText().length() <= 0) {
+				if (passwordField.getText() == null || passwordField.getText().length() <= 0) {
 					JOptionPane.showMessageDialog(frame, "Please enter password", "Warning",
 							JOptionPane.WARNING_MESSAGE);
 					return;
@@ -132,7 +136,7 @@ public class Login extends JFrame {
 
 				LoginDao loginDao = new LoginDao();
 				String username = edtUsername.getText().trim();
-				String password = edtPassword.getText().trim();
+				String password = passwordField.getText().trim();
 				LoginUser admin = new LoginUser(username, password);
 
 				String result = loginDao.register(admin);

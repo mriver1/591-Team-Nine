@@ -27,7 +27,6 @@ import javax.swing.event.ListSelectionListener;
 public class InfoFrame extends JFrame{
 	private static JTextField name;
 	private static JTextField id;
-	private static JTextField term;
 	private static JTextField instructor;
 	private static JTextField year;
 	private static JTextField credit;
@@ -37,12 +36,14 @@ public class InfoFrame extends JFrame{
 	
 	private CourseDao courseDao = new CourseDao();
 	private Course course;
-	private String className = null;
-	private String classID = null;
-	private String classTerm = null;
-	private String classYear = null;
-	private Float classCredit = null; 
+	private String className = "";
+	private String classID = "";
+	private String classTerm = "";
+	private String classYear = "";
+	private Float classCredit = (float) 0.0; 
 	private int uniqueID;
+	
+	String title = "";
 
 	private final static String prof = "Christine Papadakis-Kanaris";
 	
@@ -59,44 +60,54 @@ public class InfoFrame extends JFrame{
 			"Attendence",
 			"Quiz"
 		};
+	private static String[] terms = {"SPRING", "FALL", "SUMMER", "WINTER"};
 	private static Vector<String> columnNames = new Vector<String>() {{
-		getContentPane().add("Assignment Name");
-		getContentPane().add("Weight(Graduate)");
-		getContentPane().add("Weight(Undergraduate)");
-		getContentPane().add("Category");
-		getContentPane().add("Comment");
+		add("Assignment Name");
+		add("Weight(Graduate)");
+		add("Weight(Undergraduate)");
+		add("Category");
+		add("Comment");
 	}};
 
 	
 	public InfoFrame(String classid, String classyear, String classterm) {
 		setSize(800, 501);	
+//		if(!classid.equals("") && !classyear.equals("") && !classterm.equals("")) {
+//			
+//		}else {
+//			
+//		}
 		
-		classID = classid;
-		classYear = classyear;
-		classTerm = classterm;
-		uniqueID = courseDao.getuniqueID(classID, classTerm, classYear);
-		course = courseDao.getCourse(uniqueID);
-		className = course.getClassName();
-		classCredit = course.getClassCredit();
-		
-		assignList = assignDao.assignList(uniqueID);	
-		for(int i = 0; i < assignList.size(); i++) {
-			Vector<String> row = new Vector<>();
-			row.add(assignList.get(i).getAssignName());
-			row.add("" + assignList.get(i).getWeightG());
-			row.add("" +assignList.get(i).getWeightU());
-			row.add(assignList.get(i).getAssignCat());
-			row.add(assignList.get(i).getComment());
-			
-			formData.add(row);
-		}
-		
-		System.out.println(formData.get(formData.size() - 1));
-		String title = null;
-		if(!classID.equals(null) && !classYear.equals(null) && !classTerm.equals(null)) {
+		if(classid.equals("") || classyear.equals("") || classterm.equals("")) {
+			title = "Empty template";
+		} else {
 			title = classID + "_" + classYear + classTerm;
+			classID = classid;
+			classYear = classyear;
+			classTerm = classterm;
+			uniqueID = courseDao.getuniqueID(classID, classTerm, classYear);
+			course = courseDao.getCourse(uniqueID);
+			className = course.getClassName();
+			classCredit = course.getClassCredit();
+			
+			assignList = assignDao.assignList(uniqueID);	
+			for(int i = 0; i < assignList.size(); i++) {
+				Vector<String> row = new Vector<>();
+				row.add(assignList.get(i).getAssignName());
+				row.add("" + assignList.get(i).getWeightG());
+				row.add("" +assignList.get(i).getWeightU());
+				row.add(assignList.get(i).getAssignCat());
+				row.add(assignList.get(i).getComment());
+				
+				formData.add(row);
+			}
 		}
+		
+
+		
+		//System.out.println(formData.get(formData.size() - 1));
 		setTitle(title);
+
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		JPanel courseInfo = new JPanel();
@@ -126,10 +137,9 @@ public class InfoFrame extends JFrame{
 		label_2.setForeground(new Color(255, 248, 220));
 		courseInfo.add(label_2);
 		
-		term = new JTextField();
-		courseInfo.add(term);
-		term.setColumns(10);
-		term.setText(classTerm);
+		JComboBox comboBox = new JComboBox(terms);
+		comboBox.setSelectedItem(classterm.toUpperCase().toString());
+		courseInfo.add(comboBox);
 		
 		JLabel label_3 = new JLabel("Instructor");
 		label_3.setForeground(new Color(255, 248, 220));
@@ -226,21 +236,26 @@ public class InfoFrame extends JFrame{
 	    refreshbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 //				String note = "Update fail!";
-				assignList = assignDao.assignList(uniqueID);
-				formData.clear();
-				for(int i = 0; i < assignList.size(); i++) {
-					Vector<String> row = new Vector<>();
-					row.add(assignList.get(i).getAssignName());
-					row.add("" + assignList.get(i).getWeightG());
-					row.add("" +assignList.get(i).getWeightU());
-					row.add(assignList.get(i).getAssignCat());
-					row.add(assignList.get(i).getComment());
-					
-					formData.add(row);
+				if(!title.equals("Empty template")) {
+					assignList = assignDao.assignList(uniqueID);
+					formData.clear();
+					for(int i = 0; i < assignList.size(); i++) {
+						Vector<String> row = new Vector<>();
+						row.add(assignList.get(i).getAssignName());
+						row.add("" + assignList.get(i).getWeightG());
+						row.add("" +assignList.get(i).getWeightU());
+						row.add(assignList.get(i).getAssignCat());
+						row.add(assignList.get(i).getComment());
+						
+						formData.add(row);
+					}
+					jsp.validate();
+					jsp.repaint(); 
+					JOptionPane.showMessageDialog(null, "Successfully upadated!", "Info", JOptionPane.INFORMATION_MESSAGE);
+				}else {
+					JOptionPane.showMessageDialog(null, "Please save this new class first", "Warning", JOptionPane.WARNING_MESSAGE);
 				}
-				jsp.validate();
-				jsp.repaint(); 
-				JOptionPane.showMessageDialog(null, "Successfully upadated!", "Info", JOptionPane.INFORMATION_MESSAGE);
+				
 				}
 			});
 	    panel.add(refreshbtn);
@@ -249,12 +264,17 @@ public class InfoFrame extends JFrame{
 	    addbtn.setIcon(new ImageIcon(InfoFrame.class.getResource("/javax/swing/plaf/metal/icons/ocean/expanded.gif")));
 		addbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				DialogFrame df = new DialogFrame(uniqueID);
-				df.setVisible(true);
-				int x = getLocation().x;
-				int y = getLocation().y;
-				df.setLocation(x, y);
-				df.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+				if(!title.equals("Empty template")) {
+					DialogFrame df = new DialogFrame(uniqueID);
+					df.setVisible(true);
+					int x = getLocation().x;
+					int y = getLocation().y;
+					df.setLocation(x, y);
+					df.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+				}else {	
+					JOptionPane.showMessageDialog(null, "Please save this new class first", "Warning", JOptionPane.WARNING_MESSAGE);
+				}
+				
 			}
 		});
 	    panel.add(addbtn);
@@ -262,6 +282,7 @@ public class InfoFrame extends JFrame{
 	    JButton delbtn = new JButton("Delete");
 	    delbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(!title.equals("Empty template")) {
 				if(formData.isEmpty()) {
 					//TODO: Create a pop-up window to let user add assignments
 //					JOptionPane.showMessageDialog(null, "Empty form!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -295,6 +316,9 @@ public class InfoFrame extends JFrame{
 					
 					
 				}
+				}else {
+					JOptionPane.showMessageDialog(null, "Please save this new class first", "Warning", JOptionPane.WARNING_MESSAGE);
+				}
 			}
 		});
 	    
@@ -303,17 +327,71 @@ public class InfoFrame extends JFrame{
 	    panel.add(delbtn);
 	    
 	    JButton save = new JButton("Save as template");
+	    save.addActionListener(new ActionListener() {
+	    	public void actionPerformed(ActionEvent e) {
+//	    		dispose();
+	    		Course newCourse = new Course();
+	    		Float newCredit = Float.parseFloat(credit.getText().toString());
+	    		String newID = id.getText().toString();
+	    		String newName = name.getText().toString();
+	    		String newTerm = comboBox.getSelectedItem().toString();
+	    		String newYear = year.getText().toString();
+	    		
+	    		if(newCredit != null && !newName.equals(null) && !newTerm.equals(null) && !newYear.equals(null)) {
+	    			newCourse.setClassCredit(newCredit);
+		    		newCourse.setClassID(newID);
+		    		newCourse.setClassName(newName);
+		    		newCourse.setClassTerm(newTerm);
+		    		newCourse.setClassYear(newYear);
+		    		
+		    		//update db
+		    		if(title.equals("_") || title.equals("Empty template")) {
+		    			Boolean flag = courseDao.addClass(newID, newCredit, newName, newTerm, newYear);
+		    			uniqueID = courseDao.getuniqueID(newID, newTerm, newYear);
+		    			setUniqueID(uniqueID);
+//		    			Boolean flag1 = assignDao.addAssign(uniqueID);
+		    			if(flag) {
+		    				JOptionPane.showMessageDialog(null, "Success!", "Info", JOptionPane.INFORMATION_MESSAGE);	
+		    				title = newID + "_" + newYear + newTerm;
+		    				setT(title);
+		    				setTitle(title);
+		    			}else {
+		    				JOptionPane.showMessageDialog(null, "Fail!", "Warning", JOptionPane.WARNING_MESSAGE);
+		    			}
+		    		//update assign
+		    			
+//		    			Boolean flag1 = assignDao.addAssignList()
+//		    			StartFrame sf = new StartFrame();
+		    		} 
+//		    		else {
+////		    			Boolean flag1 = courseDao.updateClassInfo(newID, newCredit, newName, newTerm, newYear);
+//		    			//update assignment info
+//		    			
+//		    		}
+		    		
+	    		}else {
+	    			JOptionPane.showMessageDialog(null, "Please fill all the fields above!", "Missing fields", JOptionPane.ERROR_MESSAGE);
+	    		}
+	    		
+	    		
+	    	}
+	    });
 	    panel.add(save);
 	    
 	    JButton startbtn = new JButton("Start/Continue");
 	    startbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 //				dispose();
-				MainFrame mf = new MainFrame(uniqueID);
-				mf.setVisible(true);
-				int x = getLocation().x;
-				int y = getLocation().y;
-				mf.setLocation(x, y);
+				if(!title.equals("Empty template")) {
+					MainFrame mf = new MainFrame(uniqueID);
+					mf.setVisible(true);
+					int x = getLocation().x;
+					int y = getLocation().y;
+					mf.setLocation(x, y);
+				}else {
+					JOptionPane.showMessageDialog(null, "Please save this new class first", "Warning", JOptionPane.WARNING_MESSAGE);
+				}
+				
 			}
 		});
 	    startbtn.setBackground(new Color(204, 255, 204));
@@ -329,6 +407,18 @@ public class InfoFrame extends JFrame{
 			}
 		});
 	    panel.add(cancelbtn);
+	}
+
+
+	protected void setUniqueID(int uniqueID2) {
+		// TODO Auto-generated method stub
+		this.uniqueID = uniqueID2;
+	}
+
+
+	protected void setT(String title2) {
+		// TODO Auto-generated method stub
+		this.title = title2;
 	}
 }
 	

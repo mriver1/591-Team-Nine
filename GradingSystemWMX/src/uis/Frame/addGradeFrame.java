@@ -26,7 +26,7 @@ public class addGradeFrame extends JFrame{
 	private int assignID;
 	
 	private int gradeID;
-	private static Float grade;
+	private static Double grade;
 	public String update;
 	public EnrollDao enrollDao;
 	
@@ -38,7 +38,7 @@ public class addGradeFrame extends JFrame{
 		this.assignID = assignID;
 		//public int getGradeID(int studentID, int classID, int assignID) {
 		
-		gradeID = gradeDao.getGradeID(studentID, classUniqueID, assignID);
+		this.gradeID = gradeDao.getGradeID(studentID, classUniqueID, assignID);
 //		this.gradeID = gradeID;
 		
 		String title = "Add grade for assignment: " + assignName;
@@ -70,8 +70,7 @@ public class addGradeFrame extends JFrame{
 				//int studentID, int classID, int assignID
 
 				boolean flag = gradeDao.updateGrade(grade, studentID, classID, assignID);
-
-				dispose();
+				
 				if(!flag) {
 					JOptionPane.showMessageDialog(null, "Grade failed!", "Error", JOptionPane.ERROR_MESSAGE);
 				}else {
@@ -93,7 +92,7 @@ public class addGradeFrame extends JFrame{
 		getContentPane().add(cancelbtn);
 	}
 	
-	public static Float getUpdatedData() {
+	public static Double getUpdatedData() {
 		// TODO Auto-generated method stub		
 		return grade;
 	}
@@ -104,7 +103,7 @@ public class addGradeFrame extends JFrame{
 		@Override
 		public void insertUpdate(DocumentEvent e) {
 			// TODO Auto-generated method stub
-			grade = Float.parseFloat(content.getText().toString());
+			grade = Double.parseDouble(content.getText().toString());
 		}
 
 		@Override
