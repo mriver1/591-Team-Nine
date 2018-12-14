@@ -30,14 +30,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.Window.Type;
 
 public class MainFrame extends JFrame implements ActionListener{
 	private final JButton refreshbtn = new JButton("Refresh");
 	private final JButton cancelbtn = new JButton("Cancel");
 	private final JButton newbtn = new JButton("New");
 	private final JButton logoutbtn = new JButton("Log out");
-	private final JButton viewbtn = new JButton("View/Modify Course Information");
+	private final JButton viewbtn = new JButton("View Course Information");
 	private JTable studentform;
 	private GradesDao gradesDao = new GradesDao();
 	private Grade grade;
@@ -87,7 +86,7 @@ public class MainFrame extends JFrame implements ActionListener{
 		viewLn.setColumns(10);
 		viewMajor.setColumns(10);
 		statusSelect.setSelectedIndex(0);
-		setSize(936, 777);
+		setSize(1000, 1000);
 		
 		this.classUniqueID = classUniqueID;
 		course = courseDao.getCourse(classUniqueID);
@@ -163,7 +162,6 @@ public class MainFrame extends JFrame implements ActionListener{
 		panel.setLayout(new GridLayout(20, 3, 0, 0));		
 
 		DefaultTableModel tableModel = new DefaultTableModel(studentData, column);
-
         studentform = new JTable(tableModel);
 //		JTable studentform = new JTable(studentData,column);
 	    studentform.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -199,75 +197,7 @@ public class MainFrame extends JFrame implements ActionListener{
                 
             }
         });
-		/*
-		tableModel.addTableModelListener(new TableModelListener() {
-			@Override
-            public void tableChanged(TableModelEvent e) {
-				int firstRow = e.getFirstRow();
-                int lastRow = e.getLastRow();
-                int c = e.getColumn();
-                int type = e.getType();
-                
-//                Object selectedData = null;
-//                int selectedRow = studentform.getSelectedRow();
-//                int selectedColumn = studentform.getSelectedColumn();
-//                Student s = new Student();
-//                selectedData = studentform.getValueAt(selectedRow, selectedColumn);
-//                System.out.println("selectedrow" + selectedRow);
-//                String buid = (String)studentform.getValueAt(selectedRow, 0);
-//            	int id = studentDao.getIDbyBUID(buid);
-//            	s = studentDao.getStudent(id);
-//                Double total = 0.0;
-                Object[] a = new Object[assignList.size()];
-            	if (type == TableModelEvent.UPDATE) {
-                for (int row = firstRow; row <= lastRow; row++) {
-                	if (c < 5 || c >= 5 + assignList.size()) {
-                        return;
-                    }
-                	
-                	Student s = new Student();
-                	String buid = (String)studentform.getValueAt(row, 0);
-                	int id = studentDao.getIDbyBUID(buid);
-                	s = studentDao.getStudent(id);
-
-                		for(int i = 5; i < assignList.size(); i++) {
-                    		a[i] = tableModel.getValueAt(row, i);
-                    		
-                    		System.out.println(a[i]);
-                    		Double g= 0.0;
-                    		 try {
-                                 g = Double.parseDouble("" + a[i]);
-                                 
-                             } catch (Exception ex) {
-                                 ex.printStackTrace();
-                             }
-                    		Assignment a2 = assignList.get(i - 5);
-                    		boolean flag = gradesDao.updateGrade(g, id, classUniqueID, a2.getAssignID());
-                    		Double total = calculate(s, assign);
-                    		tableModel.setValueAt(total, row, column.indexOf("Total"));
-                    		tableModel.fireTableCellUpdated(row, column.indexOf("Total"));
-//             				total = getUpdatedData();
-             				boolean flag1 = studentDao.updateTotal(total, s.getUniqueId());
-             				String letter = getLetter(total);
-                     		//TODO customize
-//                     		studentform.setValueAt(letter, row, column.indexOf("LetterGrade"));
-             				tableModel.setValueAt(total, row, column.indexOf("LetterGrade"));
-                    		tableModel.fireTableCellUpdated(row, column.indexOf("LetterGrade"));
-                     		flag = studentDao.updateLetter(letter, s.getUniqueId());
-                     		if(!flag) {
-                     			JOptionPane.showMessageDialog(null, "Invalid", "Error", JOptionPane.ERROR_MESSAGE);
-                     		}
-                    	}
-                    	
-                	}
-                	
-                	
-
-                }
-                
-			}
-		});
-		*/
+		
 		//update
 	    ListSelectionModel cellSelectionModel = studentform.getSelectionModel();
         cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -286,14 +216,8 @@ public class MainFrame extends JFrame implements ActionListener{
             	int id = studentDao.getIDbyBUID(buid);
             	s = studentDao.getStudent(id);
                 if(selectedColumn >= 5 && selectedColumn < assignList.size() + 5) {
-                		// grade
-//                	String bu = (String)studentform.getValueAt(selectedRow, 0);
-//                	
-//            		int studentID = studentDao.getIDbyBUID(bu);
-//            		System.out.println("StudentID " + studentID);
         			int assignID = assignDao.getIDbyName(classUniqueID, (String)column.get(selectedColumn));
         			String assignName = (String)column.get(selectedColumn);
-            		//int gradeID = gradesDao.getGradeID(studentID, classUniqueID, assignID);
                 	if(isAdjusting) {
                 		addGradeFrame a = new addGradeFrame(assignName, id, classUniqueID, assignID);
                     	a.setVisible(true);
@@ -304,7 +228,7 @@ public class MainFrame extends JFrame implements ActionListener{
                 	}        	
                 	
                 }else if(selectedColumn == column.indexOf("Total") || selectedColumn == column.indexOf("LetterGrade")) {
-                	//calculate the total score and generate the letter grade
+
                 	if(isAdjusting) {
                 		
                 		Double total = calculate(s, assignList);
@@ -339,20 +263,20 @@ public class MainFrame extends JFrame implements ActionListener{
 		viewbtn.setBackground(new Color(210, 105, 30));
 		panel.add(performbtn);
 		panel.add(cancelbtn);
-		lblNewLabel.setForeground(new Color(211, 211, 211));
+		lblNewLabel.setForeground(new Color(255, 248, 220));
 		panel.add(lblNewLabel);
 		panel.add(viewID);
-		lblNewLabel_1.setForeground(new Color(211, 211, 211));
+		lblNewLabel_1.setForeground(new Color(255, 248, 220));
 		panel.add(lblNewLabel_1);
 		panel.add(viewFn);
-		lblNewLabel_2.setForeground(new Color(211, 211, 211));
+		lblNewLabel_2.setForeground(new Color(255, 248, 220));
 		panel.add(lblNewLabel_2);
 		panel.add(viewLn);
-		lblNewLabel_3.setForeground(new Color(211, 211, 211));
+		lblNewLabel_3.setForeground(new Color(255, 248, 220));
 		panel.add(lblNewLabel_3);
 
 		panel.add(viewMajor);
-		lblNewLabel_4.setForeground(new Color(211, 211, 211));
+		lblNewLabel_4.setForeground(new Color(255, 248, 220));
 		panel.add(lblNewLabel_4);
 
 		panel.add(statusSelect);
@@ -386,48 +310,48 @@ public class MainFrame extends JFrame implements ActionListener{
 			public void actionPerformed(ActionEvent e) {
 				//return to the preview page to select the template or start a new one
 				//pop-up window to make sure she would like to cancel the pj without save
-
+				dispose();
+				StartFrame sf = new StartFrame();
+				sf.setVisible(true);
+				int x = getLocation().x;
+				int y = getLocation().y;
+				sf.setLocation(x, y);
+				sf.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); 
 			}
 		});
 		performbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				PerformFrame pf = new PerformFrame(studentList);
+				pf.setVisible(true);
+				int x = getLocation().x;
+				int y = getLocation().y;
+				pf.setLocation(x, y);
+				pf.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE); 	
 			}
 		});
 		
 		viewbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 //				dispose();
-				
+				ViewInfoFrame vi = new ViewInfoFrame(course);
+				vi.setVisible(true);
+				int x = getLocation().x;
+				int y = getLocation().y;
+				vi.setLocation(x, y);
+				vi.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			}
 		});
 		panel_3.setBackground(new Color(139, 0, 0));
 		getContentPane().add(panel_3, BorderLayout.NORTH);
-		panel_3.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		panel_3.setLayout(new FlowLayout(FlowLayout.TRAILING, 5, 5));
 //		newbtn.setBackground(new Color(128, 0, 0));
 		panel_3.add(newbtn);
 //		logoutbtn.setBackground(new Color(210, 105, 30));
 		panel_3.add(logoutbtn);
 		
-//		getContentPane().add(panel_1, BorderLayout.SOUTH);
-//		panel_1.setLayout(new GridLayout(2, 5, 0, 0));
-//		
-//		panel_1.add(lblNewLabel_1);
-//		panel_1.add(lblNewLabel_2);
-//		panel_1.add(lblNewLabel_3);
-//		panel_1.add(lblNewLabel_4);
-//		
-//		panel_1.add(viewFn);
-//		panel_1.add(viewLn);
-//		panel_1.add(viewMajor);
-//		panel_1.add(statusSelect);
-//		panel_1.add(addbtn);
-//		panel_1.add(delbtn);
 	
 		//add student
 		addbtn.addActionListener(new ActionListener() {
-
-
 			public void actionPerformed(ActionEvent e) {
 				String s = (String)statusSelect.getSelectedItem();
 				Boolean st = true;
@@ -457,20 +381,12 @@ public class MainFrame extends JFrame implements ActionListener{
 				}else {
 					JOptionPane.showMessageDialog(null, "Add Success! Please click 'Refresh'.", "Info", JOptionPane.INFORMATION_MESSAGE);
 				}
-//                tableModel.addRow(rowValues);
-//                int rowCount = studentform.getRowCount() +1;
                 viewID.setText("");
                 viewFn.setText("");
                 viewLn.setText("");
                 viewMajor.setText("");
                 statusSelect.setSelectedIndex(0);
-                
-//				AddStudentFrame ad = new AddStudentFrame(classUniqueID);
-//				ad.setVisible(true);
-//				int x = getLocation().x;
-//				int y = getLocation().y;
-//				ad.setLocation(x, y);
-//				ad.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
 			}
 		});
 		
@@ -491,12 +407,12 @@ public class MainFrame extends JFrame implements ActionListener{
 			public void actionPerformed(ActionEvent e) {
 				//turn to the interface: create the pj (select the template or create a new one)
 				dispose();
-				InfoFrame info = new InfoFrame(null, null, null);
-				info.setVisible(true);
+				StartFrame sf = new StartFrame();
+				sf.setVisible(true);
 				int x = getLocation().x;
 				int y = getLocation().y;
-				info.setLocation(x, y);
-				info.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+				sf.setLocation(x, y);
+				sf.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			}
 		});
 	    		studentform.getTableHeader().setFont(new Font(null, Font.BOLD, 14));  
@@ -505,24 +421,6 @@ public class MainFrame extends JFrame implements ActionListener{
 	    		studentform.getTableHeader().setReorderingAllowed(false);
 	
 	}
-//
-//	protected Double calculate(Student s, Assignment assign2) {
-//		// TODO Auto-generated method stub
-//		Double total = 0.0;
-//		Double weight;
-//		if(s.getStatus()) {
-//			weight = assign2.getWeightG();
-//		}else {
-//			weight = assign2.getWeightU();
-//		}
-//		Double g = gradesDao.getGrade(s.getUniqueId(), classUniqueID, assign2.getAssignID());
-//		System.out.println(classUniqueID + s.getUniqueId() + " " + assign2.getAssignID() + " " + g);
-//		if(g != null) {
-//			total += (g * weight);
-//		}
-//
-//		return total;
-//	}
 
 	protected Double calculate(Student s, List<Assignment> assignList) {
 		// TODO Auto-generated method stub

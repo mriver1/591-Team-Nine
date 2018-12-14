@@ -22,7 +22,8 @@ public class DelFrame extends JFrame{
 	private Assignment assignDel = new Assignment();
 	private int uniqueID;
 	private String[] names;
-	ArrayList<String> del = new ArrayList<>();
+	private String del;
+	//ArrayList<String> del = new ArrayList<>();
 	public DelFrame(int uniqueID, String[] names) {
 		setSize(300, 300);
 		getContentPane().setLayout(new BorderLayout(0, 0));
@@ -48,7 +49,8 @@ public class DelFrame extends JFrame{
                 ListModel<String> listModel = list.getModel();
 //                setDelItems(listModel);
                 for (int index : indices) {
-                	del.add(listModel.getElementAt(index));
+                	del = listModel.getElementAt(index);
+                	setDel(del);
                 }
             }
         });
@@ -62,9 +64,9 @@ public class DelFrame extends JFrame{
 		 delbtn.addActionListener(new ActionListener() {
 		 	public void actionPerformed(ActionEvent e) {
 		 		boolean flag = false;
-		 		for(String name : del) {
-		 			 flag = assignDao.delAssign(uniqueID, name);
-		 		}
+		 		
+		 		flag = assignDao.delAssign(uniqueID, del);
+		 		
 		 		if(!flag) {
 					JOptionPane.showMessageDialog(null, "Update failed!", "Error", JOptionPane.ERROR_MESSAGE);
 				}else {
@@ -84,5 +86,9 @@ public class DelFrame extends JFrame{
 		 });
 		 buttonGroup.add(cancelbtn);
 		
+	}
+	protected void setDel(String del2) {
+		// TODO Auto-generated method stub
+		this.del = del2;
 	}
 }

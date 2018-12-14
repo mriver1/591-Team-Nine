@@ -35,10 +35,14 @@ public class StartFrame extends JFrame{
 		
 	}
 	public StartFrame() {
+		getContentPane().setBackground(new Color(128, 0, 0));
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		setSize(450,300);
 		
 		JLabel lblNewLabel = new JLabel("Select the template to start...");
+		lblNewLabel.setForeground(new Color(255, 248, 220));
+		lblNewLabel.setFont(new Font("Toppan Bunkyu Gothic", Font.PLAIN, 18));
+		lblNewLabel.setBackground(new Color(128, 0, 0));
 		getContentPane().add(lblNewLabel, BorderLayout.NORTH);
 		
 		
@@ -67,6 +71,7 @@ public class StartFrame extends JFrame{
 		list.setSelectedIndex(0);
 		
 		JPanel panel = new JPanel();
+		panel.setBackground(new Color(128, 0, 0));
 		getContentPane().add(panel, BorderLayout.SOUTH);
 		
 		JButton confirmbtn = new JButton("Confirm");
